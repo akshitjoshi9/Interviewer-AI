@@ -1,13 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Interviewer AI</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-    <h1>AI Interviewer</h1>
-    <button onclick="startInterview()">Start Interview</button>
+{% extends "base.html" %}
 
-    <script src="/static/js/main.js"></script>
-</body>
-</html>
+{% block title %}Interviewer AI{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Interviewer AI</h1>
+    <p class="subtitle">
+        An AI-powered autonomous interview experience
+    </p>
+
+    <button class="start-btn" onclick="startInterview()">
+        Start Interview
+    </button>
+</div>
+
+<script src="/static/js/main.js"></script>
+{% endblock %}
+

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Interview{% endblock %}
+
+{% block content %}
+
+<!-- Status Card -->
+<div class="card small-card">
+    <h2>Interview Session</h2>
+    <p id="ai-status">AI is preparing your first question...</p>
+</div>
+
+<!-- Big Question Card -->
+<div class="question-card">
+    <p id="ai-question">
+        Please introduce yourself.
+    </p>
+</div>
+
+<script src="/static/js/interview.js"></script>
+{% endblock %}
