@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Voice Chat{% endblock %}
+
+{% block content %}
+<div class="card chat-card">
+    <h2>🎙️ Voice Chatbot</h2>
+    <p class="subtitle">Click once and start talking naturally</p>
+
+    <div style="display:flex; gap:12px; justify-content:center;">
+        <button class="start-btn" onclick="startChat()">
+            🎤 Start Talking
+        </button>
+
+        <button class="stop-btn" onclick="stopChat()">
+            ⏹ Stop Talking
+        </button>
+    </div>
+
+    <div id="chat-window"></div>
+</div>
+
+<script src="/static/js/chat.js"></script>
+{% endblock %}

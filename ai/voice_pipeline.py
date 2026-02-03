@@ -1,0 +1,28 @@
+from openai import OpenAI
+
+client = OpenAI()
+
+SYSTEM_PROMPT = """
+You are a friendly, natural voice assistant.
+Talk like a human.
+Keep answers short, conversational, and spoken-friendly.
+"""
+
+class VoiceChatSession:
+    def __init__(self):
+        self.messages = [
+            {"role": "system", "content": SYSTEM_PROMPT}
+        ]
+
+    def reply(self, user_text: str) -> str:
+        self.messages.append({"role": "user", "content": user_text})
+
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=self.messages,
+            temperature=0.7
+        )
+
+        ai_text = response.choices[0].message.content
+        self.messages.append({"role": "assistant", "content": ai_text})
+        return ai_text

@@ -31,7 +31,7 @@ h1 {
 
 .subtitle {
     color: #666;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .start-btn {
@@ -49,36 +49,54 @@ h1 {
     background: #c70404;
     transform: translateY(-2px);
 }
-
-.small-card {
-    margin-bottom: 30px;
+.stop-btn {
+    background: #555;
+    border: none;
+    color: white;
+    padding: 14px 24px;
+    font-size: 15px;
+    border-radius: 30px;
+    cursor: pointer;
 }
 
-.question-card {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
-    padding: 50px 40px;
-    max-width: 700px;
-    margin: 0 auto;
-    text-align: center;
-
-    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+.stop-btn:hover {
+    background: #333;
 }
 
-#ai-question {
-    font-size: 28px;
-    font-weight: 600;
-    color: #333;
+.chat-card {
+    display: flex;
+    flex-direction: column;
+}
+
+#chat-window {
+    margin-top: 25px;
+    height: 360px;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chat-bubble {
+    max-width: 75%;
+    padding: 14px 18px;
+    border-radius: 18px;
+    font-size: 15px;
     line-height: 1.4;
+    word-wrap: break-word;
 }
 
-.speaking {
-    animation: pulse 1.5s infinite;
+.user {
+    align-self: flex-end;
+    background: #667eea;
+    color: white;
+    border-bottom-right-radius: 4px;
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.03); }
-    100% { transform: scale(1); }
+.ai {
+    align-self: flex-start;
+    background: #f1f1f1;
+    color: #333;
+    border-bottom-left-radius: 4px;
 }
-
