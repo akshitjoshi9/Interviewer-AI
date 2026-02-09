@@ -39,12 +39,11 @@ function connectSocket() {
 
     socket.onopen = () => {
         console.log("WebSocket Connected");
-        startListening();
     };
 
     socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        log(data.text, "ai");
+        logMessage(data.text, "ai");
         speak(data.text);
     };
 
@@ -61,46 +60,60 @@ function startListening() {
     const SpeechRecognition =
         window.SpeechRecognition || window.webkitSpeechRecognition;
 
+    if (!SpeechRecognition) {
+        alert("Speech Recognition not supported in this browser.");
+        return;
+    }
+
     recognition = new SpeechRecognition();
     recognition.lang = "en-US";
     recognition.continuous = true;
     recognition.interimResults = false;
 
     recognition.onresult = (event) => {
+        if (isSpeaking || !socket) return;
+
         const transcript =
             event.results[event.results.length - 1][0].transcript.trim();
 
-        if (!isSpeaking && transcript.length > 2 && socket) {
-            log(transcript, "user");
-            socket.send(JSON.stringify({ text: transcript }));
-        }
+        if (transcript.length < 2) return;
+
+        logMessage(transcript, "user");
+        socket.send(JSON.stringify({ text: transcript }));
     };
 
     recognition.onerror = (e) => {
-        console.error("Speech error", e);
+        console.error("Speech recognition error", e);
     };
 
     recognition.start();
 }
 
 function speak(text) {
-    if (!recognition) return;
+    if (!text) return;
 
     isSpeaking = true;
-    recognition.stop();
+
+    if (recognition) {
+        recognition.stop();
+    }
+
+    speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-US";
+    utterance.rate = 1;
+    utterance.pitch = 1;
 
     utterance.onend = () => {
         isSpeaking = false;
-        if (recognition) recognition.start();
+        startListening();
     };
 
     speechSynthesis.speak(utterance);
 }
 
-function log(text, sender) {
+function logMessage(text, sender) {
     const chatWindow = document.getElementById("chat-window");
 
     const bubble = document.createElement("div");
