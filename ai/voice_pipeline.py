@@ -14,6 +14,11 @@ class VoiceChatSession:
             {"role": "system", "content": SYSTEM_PROMPT}
         ]
 
+    def start(self) -> str:
+        greeting = "Hi! I'm your AI assistant. You can talk to me naturally. What's on your mind today?"
+        self.messages.append({"role": "assistant", "content": greeting})
+        return greeting
+
     def reply(self, user_text: str) -> str:
         self.messages.append({"role": "user", "content": user_text})
 

@@ -35,6 +35,8 @@ async def chat_ws(ws: WebSocket):
     print("Voice Chatbot Connected")
 
     session = VoiceChatSession()
+    greeting = session.start()
+    await ws.send_json({"text": greeting})
 
     try:
         while True:
