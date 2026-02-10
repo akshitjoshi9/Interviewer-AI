@@ -123,6 +123,8 @@ Generates interview questions based on structured JD data.
 ENTRY → parse_jd → plan_questions → END
 ```
 The graph executes linearly with a single shared state object.
+Project Structure
+The project is organized to clearly separate API routing, agent logic, and voice processing responsibilities.
 
 --------------------------------------------------------------------
 
@@ -131,6 +133,7 @@ The graph executes linearly with a single shared state object.
 The project is organized to clearly separate API routing, agent logic,
 and voice processing responsibilities.
 
+```text
 Interviewer-AI/
 ├── ai/
 │   ├── agents.py            # LangGraph agents (parse_jd, plan_questions)
@@ -149,7 +152,7 @@ Interviewer-AI/
 ├── main.py                  # FastAPI application entry point
 ├── requirements.txt
 └── README.md
-
+```
 --------------------------------------------------------------------
 
 ## FastAPI Integration
