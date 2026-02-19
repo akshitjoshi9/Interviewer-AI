@@ -5,10 +5,8 @@ from fastapi.templating import Jinja2Templates
 from conversation.routers import router as interview_router
 from ai.voice_pipeline import VoiceChatSession
 
-from openai import OpenAI
+from core.config import openai_client
 
-
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = FastAPI()
 
@@ -56,3 +54,14 @@ async def chat_ws(ws: WebSocket):
 
     except WebSocketDisconnect:
         print("Voice Chatbot Disconnected")
+
+@app.get("/interview/result/{interview_id}")
+def interview_result_page(request: Request, interview_id: str):
+    return templates.TemplateResponse(
+        "interview_result.html",
+        {
+            "request": request,
+            "interview_id": interview_id,
+            "title": "Interview Results"
+        }
+    )

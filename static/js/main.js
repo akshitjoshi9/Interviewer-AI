@@ -6,11 +6,17 @@ async function startInterview() {
         return;
     }
 
-    await fetch("/api/interview/init", {
+    const res = await fetch("/api/interview/init", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ jd })
     });
+
+    const data = await res.json();
+
+    if (data.interview_id) {
+        localStorage.setItem("interview_id", data.interview_id);
+    }
 
     window.location.href = "/interview";
 }

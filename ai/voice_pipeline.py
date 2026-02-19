@@ -1,6 +1,5 @@
-from openai import OpenAI
+from core.config import openai_client
 
-client = OpenAI()
 
 SYSTEM_PROMPT = """
 You are a friendly, natural voice assistant.
@@ -22,7 +21,7 @@ class VoiceChatSession:
     def reply(self, user_text: str) -> str:
         self.messages.append({"role": "user", "content": user_text})
 
-        response = client.chat.completions.create(
+        response = openai_client.chat.completions.create(
             model="gpt-4o-mini",
             messages=self.messages,
             temperature=0.7

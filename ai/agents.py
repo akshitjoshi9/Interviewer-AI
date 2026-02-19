@@ -2,13 +2,24 @@ from typing import TypedDict, List
 from langgraph.graph import StateGraph, END
 from langchain_openai import ChatOpenAI
 import json
+from core.config import llm
 
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
+
+# llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
+llm = llm
+
 
 class InterviewState(TypedDict):
     jd: str
     parsed_jd: dict
     questions: List[str]
+
+
+class EvaluationState(TypedDict):
+    question: str
+    answer: str
+    parsed_jd: dict
+    evaluation: dict
 
 
 def parse_jd(state: InterviewState):
@@ -72,6 +83,56 @@ Rules:
     return {"questions": questions}
 
 
+def evaluate_answer(state: EvaluationState):
+    question = state["question"]
+    answer = state["answer"]
+    jd = state["parsed_jd"]
+
+    prompt = f"""
+    You are a strict AI technical interviewer.
+
+    Evaluate the candidate's answer.
+
+    SCORING RULES:
+    - Score must be between 0 to 10
+    - Consider correctness, clarity, depth, relevance to JD
+    - Be realistic (do NOT always give high scores)
+
+    Return strictly JSON.
+
+    JSON Schema:
+    {{
+    "score": number (0-10),
+    "feedback": "detailed explanation on candidate answer wrt question and experience",
+    "strengths": "what was good",
+    "improvements": "what was missing or weak"
+    }}
+
+    Job Context:
+    Role: {jd.get("role")}
+    Skills: {jd.get("skills")}
+    Experience: {jd.get("experience_level")}
+    Competencies: {jd.get("priority_competencies")}
+
+    Question:
+    {question}
+
+    Candidate Answer:
+    {answer}
+    """
+    # breakpoint()
+    res = llm.invoke(
+        prompt,
+        response_format={"type": "json_object"}
+    )
+
+    data = json.loads(res.content)
+
+    print("\n=== EVALUATION RESULT ===")
+    print(json.dumps(data, indent=2))
+
+    return {"evaluation": data}
+
 
 def build_graph():
     graph = StateGraph(InterviewState)
@@ -81,5 +142,15 @@ def build_graph():
     graph.set_entry_point("parse_jd")
     graph.add_edge("parse_jd", "plan_questions")
     graph.add_edge("plan_questions", END)
+
+    return graph.compile()
+
+def build_evaluation_graph():
+    graph = StateGraph(EvaluationState)
+
+    graph.add_node("evaluate_answer", evaluate_answer)
+
+    graph.set_entry_point("evaluate_answer")
+    graph.add_edge("evaluate_answer", END)
 
     return graph.compile()

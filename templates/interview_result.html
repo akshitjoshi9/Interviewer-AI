@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Interview Results{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/interview_result.css">
+
+  <div class="card">
+
+    <div class="page-title">
+    <h2>Interview Results
+        <button class="print-icon-btn" onclick="window.print()" title="Print Report">
+            🖨
+        </button>
+    </h2>
+    <p>AI-generated evaluation report</p>
+    </div>
+    <div id="summary"></div>
+    <div id="results"></div>
+
+  </div>
+
+<script src="/static/js/interview_result.js"></script>
+{% endblock %}

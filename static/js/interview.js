@@ -37,14 +37,46 @@ async function speakQuestion() {
     hideSubmit();
     statusEl.textContent = "AI is speaking...";
 
-    const res = await fetch("/api/interview/question/audio");
+    const interviewId = localStorage.getItem("interview_id");
+    console.log("Interview ID:", interviewId);
 
-    if (res.headers.get("content-type")?.includes("application/json")) {
-        statusEl.textContent = "Interview completed";
-        stream?.getTracks().forEach(t => t.stop());
+    if (!interviewId) {
+        statusEl.textContent = "Interview session not found.";
         return;
     }
 
+    const res = await fetch(`/api/interview/question/audio/${interviewId}`);
+
+    console.log("Response status:", res.status);
+    console.log("Content-Type:", res.headers.get("content-type"));
+
+    // ✅ INTERVIEW COMPLETED
+    if (res.headers.get("content-type")?.includes("application/json")) {
+        statusEl.innerHTML = `
+            <div style="text-align:center">
+                <p style="margin-bottom:16px;">
+                    <strong>Interview completed</strong>
+                </p>
+                <button id="viewResultBtn" class="start-btn">
+                    📊 View Interview Results
+                </button>
+            </div>
+        `;
+
+        stream?.getTracks().forEach(t => t.stop());
+
+        const btn = document.getElementById("viewResultBtn");
+        if (btn) {
+            btn.onclick = () => {
+                const interviewId = localStorage.getItem("interview_id");
+                window.location.href = `/interview/result/${interviewId}`;
+            };
+        }
+
+        return; // VERY IMPORTANT
+    }
+
+    // PLAY QUESTION AUDIO
     const audioBlob = await res.blob();
     const audio = new Audio(URL.createObjectURL(audioBlob));
 
@@ -66,7 +98,9 @@ submitBtn.onclick = async () => {
         const formData = new FormData();
         formData.append("file", audioBlob, "answer.webm");
 
-        await fetch("/api/interview/answer", {
+        const interviewId = localStorage.getItem("interview_id");
+
+        await fetch(`/api/interview/answer/${interviewId}`, {
             method: "POST",
             body: formData
         });
@@ -76,4 +110,3 @@ submitBtn.onclick = async () => {
 };
 
 setTimeout(speakQuestion, 1000);
-
